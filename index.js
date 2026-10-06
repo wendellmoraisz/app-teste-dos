@@ -1,19 +1,9 @@
-const express = require("express");
-const app = express();
-
-let numberOfRequests = 0;
-let requestsTimeInterval;
-
-app.get("/", (req, res) => {
-    console.log(`${++numberOfRequests} Requisições recebidas em ${calculateRequestsInterval()} segundos`);
-    res.status(200);
-});
-
-const calculateRequestsInterval = () => {
-    return (Date.now() - requestsTimeInterval) / 1000;
-}
-
-app.listen(8080, () => {
-    requestsTimeInterval = Date.now();
-    console.log("Servidor rodando na porta 8080");
+const { createApp } = require('./server');
+const { randomBytes } = require('node:crypto');
+const adminToken = process.env.ADMIN_TOKEN || randomBytes(18).toString('hex');
+const port = Number(process.env.PORT || 8080);
+createApp({ adminToken }).app.listen(port, '0.0.0.0', () => {
+    console.log(`Alunos: http://localhost:${port}/`);
+    console.log(`Professor: http://localhost:${port}/painel`);
+    console.log(`Chave do professor: ${adminToken}`);
 });
